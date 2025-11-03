@@ -21,7 +21,7 @@ const images = [
 export default function HeroContent() {
     return (
         <div className='content'>
-            <div className='absolute bottom-8 left-8 z-20 max-w-lg'>
+            <div className='absolute bottom-8 left-8 z-20 max-w-xl'>
                 <div className='text-left'>
                     {/* Badge / Highlight */}
                     <div
@@ -42,7 +42,7 @@ export default function HeroContent() {
                         </span>{' '}
                         Stunning Islands
                         <br />
-                        <span className='font-light tracking-tight text-white'>
+                        <span className='font-light tracking-tight inline text-white'>
                             &{' '}
                             <span className='italic instrument'>Timeless</span>{' '}
                             <span>Adventures</span>
