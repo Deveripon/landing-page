@@ -1,8 +1,9 @@
 'use client';
 
-import { useRef } from 'react';
-import ImageCard from './image-card';
+import 'swiper/css';
+import 'swiper/css/effect-coverflow';
 import LoginButton from './login-button';
+import VerticalSlider from './vertical-slider';
 
 const images = [
     '/cardimage.jpg',
@@ -16,9 +17,8 @@ const images = [
     '/cardimage8.jpg',
     '/cardimage9.jpg',
 ];
-export default function HeroContent() {
-    const imageContainerRef = useRef();
 
+export default function HeroContent() {
     return (
         <div className='content'>
             <div className='absolute bottom-8 left-8 z-20 max-w-lg'>
@@ -63,24 +63,7 @@ export default function HeroContent() {
                     </div>
                 </div>
             </div>
-            <div className='absolute top-[15%] right-[25%] z-20 max-w-lg'>
-                <div className='relative'>
-                    {images.map((image, i) => (
-                        <div
-                            ref={imageContainerRef}
-                            key={i}
-                            className='absolute left-0 transition-all duration-300 hover:scale-105'
-                            style={{
-                                top: `${i * 30}px`,
-                                zIndex: 10 + i,
-                                transform: `rotate(${(i - 1) * 3}deg)`,
-                                opacity: 1,
-                            }}>
-                            <ImageCard image={image} />
-                        </div>
-                    ))}
-                </div>
-            </div>
+            <VerticalSlider />
         </div>
     );
 }
