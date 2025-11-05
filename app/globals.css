@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-@import "tw-animate-css";
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -41,6 +41,8 @@
     --radius-md: calc(var(--radius) - 2px);
     --radius-lg: var(--radius);
     --radius-xl: calc(var(--radius) + 4px);
+    --font-dm-sans: var(--font-dm-sans);
+    --font-nyght-serif: var(--font-nyght-serif);
 }
 /* Apple Site Header Glass Effects - Clean, Minimal, Crisp */
 .liquid-glass {
@@ -110,8 +112,6 @@
         drop-shadow(0.5px 0 1px rgba(0, 255, 0, 0.05))
         drop-shadow(-0.5px 0 1px rgba(0, 0, 255, 0.04));
 }
-
-
 
 :root {
     --radius: 0.625rem;
@@ -183,11 +183,11 @@
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+    * {
+        @apply border-border outline-ring/50 font-dm-sans;
     }
-  body {
-    @apply bg-background text-foreground;
+    body {
+        @apply bg-background text-foreground;
     }
 }
 

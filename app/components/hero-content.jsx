@@ -3,7 +3,7 @@
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import LoginButton from './login-button';
-import VerticalSlider from './vertical-slider';
+import VerticalSlider from './vertical-slider-swiper';
 
 const images = [
     '/cardimage.jpg',
