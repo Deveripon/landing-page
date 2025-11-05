@@ -6,7 +6,7 @@ import { useRef, useState } from 'react';
 import LoginForm from '../sign-in/components/login-form';
 import HeroContent from './hero-content';
 import LoginButton from './login-button';
-import VerticalSlider from './vertical-slider';
+import VerticalMarquee from './vertical-marque';
 
 export default function Content() {
     const [showLogin, setShowLogin] = useState(false);
@@ -148,8 +148,8 @@ export default function Content() {
                 </div>
             )}
 
-            <VerticalSlider />
-            {/*  <VerticalMarquee /> */}
+            {/*   <VerticalSlider /> */}
+            <VerticalMarquee />
         </div>
     );
 }

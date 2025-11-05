@@ -1,7 +1,8 @@
 'use client';
 import ImageCard from '@/app/components/image-card';
-import { gsap } from 'gsap';
 import { useEffect, useRef, useState } from 'react';
+
+// Placeholder ImageCard component
 
 const images = [
     '/im1.jpg',
@@ -14,124 +15,218 @@ const images = [
     '/im2.jpg',
 ];
 
-// Simple ImageCard component
-
 function VerticalMarquee() {
     const containerRef = useRef(null);
-    const contentRef = useRef(null);
+    const slidesRef = useRef([]);
     const animationRef = useRef(null);
-    const [isPaused, setIsPaused] = useState(false);
-    const speedRef = useRef(1);
+    const isDraggingRef = useRef(false);
+    const startYRef = useRef(0);
+    const currentPositionRef = useRef(0);
+    const velocityRef = useRef(1); // pixels per frame
+    const dragThresholdRef = useRef(false);
+    const [isHovered, setIsHovered] = useState(false);
+    const isPausedRef = useRef(false);
 
+    // Triple the images for seamless looping
+    const tripleImages = [...images, ...images, ...images];
     const slideHeight = 410; // 390px + 20px spacing
     const totalHeight = images.length * slideHeight;
 
     useEffect(() => {
-        const content = contentRef.current;
-
-        // Create seamless loop animation
-        const setupAnimation = () => {
-            // Reset position
-            gsap.set(content, { y: 20 });
-
-            // Create infinite loop
-            animationRef.current = gsap.to(content, {
-                y: -totalHeight,
-                duration: images.length * 3, // 3 seconds per image
-                ease: 'none',
-                repeat: -1,
-                modifiers: {
-                    y: gsap.utils.unitize(y => parseFloat(y) % totalHeight),
-                },
-            });
-        };
-
-        setupAnimation();
-
-        return () => {
-            if (animationRef.current) {
-                animationRef.current.kill();
-            }
-        };
-    }, [totalHeight]);
-
-    // Handle mouse wheel for speed control
-    useEffect(() => {
+        const slides = slidesRef.current;
         const container = containerRef.current;
-        let wheelTimeout;
 
+        // Set initial positions
+        slides.forEach((slide, i) => {
+            if (slide) {
+                slide.style.transform = `translateY(${
+                    (i - images.length) * slideHeight
+                }px)`;
+            }
+        });
+
+        currentPositionRef.current = 0;
+
+        // Marquee animation function
+        const animate = () => {
+            if (!isDraggingRef.current && !isPausedRef.current) {
+                currentPositionRef.current += velocityRef.current;
+
+                // Reset position for seamless loop
+                if (currentPositionRef.current >= totalHeight) {
+                    currentPositionRef.current -= totalHeight;
+                }
+
+                slides.forEach((slide, i) => {
+                    if (slide) {
+                        const baseY = (i - images.length) * slideHeight;
+                        const y = baseY - currentPositionRef.current;
+                        slide.style.transform = `translateY(${y}px)`;
+                    }
+                });
+            }
+
+            animationRef.current = requestAnimationFrame(animate);
+        };
+
+        animationRef.current = requestAnimationFrame(animate);
+
+        // Wheel event handler
+        let wheelTimeout;
         const handleWheel = e => {
             e.preventDefault();
 
-            if (animationRef.current) {
-                const delta = e.deltaY;
-                // Adjust speed based on wheel direction
-                speedRef.current = delta > 0 ? 2 : 0.5;
-                animationRef.current.timeScale(speedRef.current);
+            clearTimeout(wheelTimeout);
 
-                clearTimeout(wheelTimeout);
-                wheelTimeout = setTimeout(() => {
-                    speedRef.current = 1;
-                    if (animationRef.current && !isPaused) {
-                        animationRef.current.timeScale(1);
-                    }
-                }, 500);
+            // Temporarily increase velocity based on wheel direction
+            const wheelDelta = e.deltaY * 0.5;
+            velocityRef.current = Math.max(
+                0.5,
+                Math.min(5, Math.abs(wheelDelta) * 0.1)
+            );
+
+            if (e.deltaY < 0) {
+                velocityRef.current *= -1;
             }
+
+            wheelTimeout = setTimeout(() => {
+                // Return to normal speed
+                velocityRef.current = 0.5;
+            }, 500);
         };
 
+        // Touch/Mouse drag handlers
+        let lastY = 0;
+        let lastTime = Date.now();
+
+        const handleStart = e => {
+            e.preventDefault();
+            isDraggingRef.current = true;
+            dragThresholdRef.current = false;
+            startYRef.current = e.type.includes('mouse')
+                ? e.clientY
+                : e.touches[0].clientY;
+            lastY = startYRef.current;
+            lastTime = Date.now();
+
+            container.style.cursor = 'grabbing';
+        };
+
+        const handleMove = e => {
+            if (!isDraggingRef.current) return;
+
+            e.preventDefault();
+
+            const currentY = e.type.includes('mouse')
+                ? e.clientY
+                : e.touches[0].clientY;
+            const currentTime = Date.now();
+            const deltaY = lastY - currentY;
+            const deltaTime = Math.max(1, currentTime - lastTime);
+
+            // Update position based on drag
+            currentPositionRef.current += deltaY;
+
+            // Keep within bounds for seamless loop
+            if (currentPositionRef.current >= totalHeight) {
+                currentPositionRef.current -= totalHeight;
+            } else if (currentPositionRef.current < 0) {
+                currentPositionRef.current += totalHeight;
+            }
+
+            // Calculate velocity for momentum
+            velocityRef.current = (deltaY / deltaTime) * 16; // Convert to per-frame velocity
+
+            lastY = currentY;
+            lastTime = currentTime;
+        };
+
+        const handleEnd = e => {
+            if (!isDraggingRef.current) return;
+
+            e.preventDefault();
+            isDraggingRef.current = false;
+            dragThresholdRef.current = false;
+
+            container.style.cursor = 'grab';
+
+            // Apply momentum and gradually slow down
+            const momentum = velocityRef.current;
+            let currentMomentum = momentum;
+            const friction = 0.95;
+
+            const applyMomentum = () => {
+                if (Math.abs(currentMomentum) > 0.1 && !isDraggingRef.current) {
+                    currentMomentum *= friction;
+                    velocityRef.current = currentMomentum;
+                    requestAnimationFrame(applyMomentum);
+                } else {
+                    velocityRef.current = 0.5; // Return to normal speed
+                }
+            };
+
+            applyMomentum();
+        };
+
+        // Add event listeners
         container.addEventListener('wheel', handleWheel, { passive: false });
+        container.addEventListener('mousedown', handleStart);
+        container.addEventListener('mousemove', handleMove);
+        container.addEventListener('mouseup', handleEnd);
+        container.addEventListener('mouseleave', handleEnd);
+        container.addEventListener('touchstart', handleStart, {
+            passive: false,
+        });
+        container.addEventListener('touchmove', handleMove, { passive: false });
+        container.addEventListener('touchend', handleEnd, { passive: false });
 
         return () => {
+            if (animationRef.current) {
+                cancelAnimationFrame(animationRef.current);
+            }
             container.removeEventListener('wheel', handleWheel);
+            container.removeEventListener('mousedown', handleStart);
+            container.removeEventListener('mousemove', handleMove);
+            container.removeEventListener('mouseup', handleEnd);
+            container.removeEventListener('mouseleave', handleEnd);
+            container.removeEventListener('touchstart', handleStart);
+            container.removeEventListener('touchmove', handleMove);
+            container.removeEventListener('touchend', handleEnd);
             clearTimeout(wheelTimeout);
         };
-    }, [isPaused]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-    // Handle hover pause
+    // Pause on hover
     const handleMouseEnter = () => {
-        setIsPaused(true);
-        if (animationRef.current) {
-            gsap.to(animationRef.current, {
-                timeScale: 0,
-                duration: 0.3,
-                ease: 'power2.out',
-            });
-        }
+        setIsHovered(true);
+        isPausedRef.current = true;
     };
 
     const handleMouseLeave = () => {
-        setIsPaused(false);
-        if (animationRef.current) {
-            gsap.to(animationRef.current, {
-                timeScale: speedRef.current,
-                duration: 0.3,
-                ease: 'power2.out',
-            });
-        }
+        setIsHovered(false);
+        isPausedRef.current = false;
     };
-
-    // Triple the images for seamless looping
-    const tripleImages = [...images, ...images, ...images];
 
     return (
         <div className='absolute h-screen right-0 z-20 w-full max-w-lg'>
             <div
                 ref={containerRef}
-                className='main h-full overflow-hidden relative'
+                className='main h-full overflow-hidden relative cursor-grab select-none'
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
                 style={{ touchAction: 'none' }}>
-                <div
-                    ref={contentRef}
-                    className='absolute left-1/2 top-1/2 -translate-x-1/2'
-                    style={{ width: '354px' }}>
+                <div className='absolute inset-0 flex flex-col items-center justify-center pointer-events-none'>
                     {tripleImages.map((image, i) => (
                         <div
                             key={i}
-                            className='mb-5 rounded-2xl overflow-hidden shadow-lg'
+                            ref={el => (slidesRef.current[i] = el)}
+                            className='absolute rounded-2xl overflow-hidden shadow-lg w-full'
                             style={{
                                 height: '390px',
                                 width: '354px',
+                                pointerEvents: 'none',
+                                willChange: 'transform',
                             }}>
                             <ImageCard image={image} />
                         </div>
