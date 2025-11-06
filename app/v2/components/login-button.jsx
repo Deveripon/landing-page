@@ -23,15 +23,12 @@ const LoginButton = ({
                 onMouseMove={handleMouseMove}
                 onClick={handleShowLogin}
                 className={cn(
-                    'hidden relative md:flex items-center overflow-hidden gap-2 cursor-pointer pr-2 pl-4 py-1.5  text-white  rounded-full font-semibold  text-md duration-200 transition group',
+                    ' relative flex items-center overflow-hidden gap-2 cursor-pointer pr-2 pl-4 py-1.5  text-white  rounded-full font-semibold  text-md duration-200 transition group',
                     className
                 )}>
                 <span className='relative z-10 font-medium'>{text}</span>
                 {icon && (
-                    <ArrowUpRight
-                        size={20}
-                        className='text-black group-hover:text-white z-10 group-hover:rotate-45 transition-transform duration-200'
-                    />
+                    <ArrowUpRight className='text-black md:h-5 h-[18px]  group-hover:text-white z-10 group-hover:rotate-45 transition-transform duration-200' />
                 )}
 
                 {/* Overlay that follows mouse */}

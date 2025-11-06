@@ -132,28 +132,33 @@ const LoginForm = ({ setShowLogin, className }) => {
     };
 
     return (
-        <div className={cn('py-[81px] px-[60px] relative group', className)}>
+        <div
+            className={cn(
+                'py-8 sm:py-12 md:py-16 lg:py-[81px] px-4 sm:px-6 md:px-10 lg:px-[60px] relative group w-full max-w-full',
+                className
+            )}>
             <div
-                className='back absolute top-6 right-6 items-center gap-2 cursor-pointer hover:text-white text-white/30 duration-500 font-dm-sans font-normal text-[16px] leading-[26px] tracking-[-0.36px]'
+                className='back absolute top-4 right-4 sm:top-6 sm:right-6 flex items-center gap-2 cursor-pointer hover:text-white text-white/30 duration-500 font-dm-sans font-normal text-sm sm:text-[16px] leading-[26px] tracking-[-0.36px]'
                 onClick={() => setShowLogin(false)}>
                 <HugeiconsIcon
                     onClick={() => setShowLogin(false)}
                     icon={CancelCircleIcon}
+                    className='w-5 h-5 sm:w-6 sm:h-6'
                 />
             </div>
 
-            <div ref={formElementsRef}>
-                <div className='info flex flex-col gap-4 mb-12'>
+            <div ref={formElementsRef} className='w-full'>
+                <div className='info flex flex-col gap-3 sm:gap-4 mb-8 sm:mb-10 md:mb-12'>
                     <h1
                         ref={headingRef}
-                        className='font-nyght-serif text-5xl leading-[54px] tracking-[-1.44px] text-white text-center'>
+                        className='font-nyght-serif text-3xl sm:text-4xl md:text-5xl leading-tight sm:leading-[54px] tracking-[-1.44px] text-white text-center px-4'>
                         {formType === 'login'
                             ? 'Welcome Back'
                             : 'Create Account'}
                     </h1>
                     <p
                         ref={descriptionRef}
-                        className='font-dm-sans text-white w-[430px] leading-[26px] text-center tracking-[-0.36px]'>
+                        className='font-dm-sans text-white text-sm sm:text-base w-full max-w-[430px] mx-auto leading-[26px] text-center tracking-[-0.36px] px-4'>
                         {formType === 'login'
                             ? 'Sign in to continue, Enter your details to access your account and dashboard.'
                             : 'Sign up to get started, Create your account and start exploring your dashboard today.'}
@@ -163,7 +168,7 @@ const LoginForm = ({ setShowLogin, className }) => {
                 <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit(onSubmit)}
-                        className='space-y-6'>
+                        className='space-y-4 sm:space-y-6 w-full max-w-[550px] mx-auto'>
                         <div ref={formContentRef}>
                             <div
                                 ref={nameFieldRef}
@@ -212,7 +217,7 @@ const LoginForm = ({ setShowLogin, className }) => {
                                 )}
                             />
 
-                            <div className='password mt-6'>
+                            <div className='password mt-4 sm:mt-6'>
                                 <FormField
                                     control={form.control}
                                     name='password'
@@ -232,7 +237,7 @@ const LoginForm = ({ setShowLogin, className }) => {
                                 />
                                 {showForgotPassword && (
                                     <div className='flex justify-end'>
-                                        <button className='font-dm-sans my-0 text-right cursor-pointer text-[#0d0e30]/70 hover:text-emerald-400 text-sm leading-[26px] font-normal tracking-[-0.36px]'>
+                                        <button className='font-dm-sans my-0 text-right cursor-pointer text-[#0d0e30]/70 hover:text-emerald-400 text-xs sm:text-sm leading-[26px] font-normal tracking-[-0.36px]'>
                                             forgot your password?
                                         </button>
                                     </div>
@@ -242,9 +247,9 @@ const LoginForm = ({ setShowLogin, className }) => {
 
                         <SubmitButton formType={formType} />
 
-                        <div className='form-separator w-full flex items-center my-4 gap-4'>
+                        <div className='form-separator w-full flex items-center my-3 sm:my-4 gap-3 sm:gap-4'>
                             <hr className='h-px w-full bg-[#0d0e13]/70' />
-                            <span className='font-dm-sans text-white text-[18px leading-[26px] tracking-[-0.36px]'>
+                            <span className='font-dm-sans text-white text-base sm:text-[18px] leading-[26px] tracking-[-0.36px] whitespace-nowrap'>
                                 Or
                             </span>
                             <hr className='h-px w-full bg-[#0d0e13]/70' />
@@ -252,8 +257,8 @@ const LoginForm = ({ setShowLogin, className }) => {
 
                         <LoginWithGoogle />
 
-                        <div className='flex items-center justify-center'>
-                            <span className='font-dm-sans text-white text-[18px leading-[26px] tracking-[-0.36px]'>
+                        <div className='flex flex-wrap items-center justify-center gap-1 text-center'>
+                            <span className='font-dm-sans text-white text-sm sm:text-base md:text-[16px] leading-[26px] tracking-[-0.36px]'>
                                 {formType === 'login'
                                     ? "Don't have an account?"
                                     : 'Already have an account?'}{' '}
@@ -261,7 +266,7 @@ const LoginForm = ({ setShowLogin, className }) => {
                             <button
                                 type='button'
                                 onClick={handleFormTypeChange}
-                                className='font-dm-sans cursor-pointer text-emerald-400 hover:text-emerald-500 leading-[26px] font-semibold ml-1 tracking-[-0.36px]'>
+                                className='font-dm-sans cursor-pointer text-emerald-400 hover:text-emerald-500 text-sm sm:text-base md:text-[16px] leading-[26px] font-semibold tracking-[-0.36px]'>
                                 {formType === 'login' ? 'Sign up' : 'Sign in'}
                             </button>
                         </div>

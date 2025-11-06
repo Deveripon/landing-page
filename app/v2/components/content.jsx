@@ -5,6 +5,7 @@ import { gsap } from 'gsap';
 import { useRef, useState } from 'react';
 import LoginForm from '../sign-in/components/login-form';
 import HeroContent from './hero-content';
+import HorizontalMarquee from './horizontal-marquee.jsx';
 import LoginButton from './login-button';
 import VerticalMarquee from './vertical-marque';
 
@@ -111,7 +112,7 @@ export default function Content() {
                 )}>
                 <div className='text-left'>
                     {/* Description */}
-                    <p className='text-[18px] font-normal font-dm-sans text-white mb-4 leading-[26px] -tracking-[2%]'>
+                    <p className='md:text-[18px] text-[16px] font-normal font-dm-sans text-white mb-4 leading-[26px] -tracking-[2%]'>
                         Experience the magic of turquoise waters, golden
                         beaches, and vibrant cultures. From relaxing getaways to
                         thrilling island tours.
@@ -121,7 +122,7 @@ export default function Content() {
                     <div className='flex items-center gap-4 flex-wrap'>
                         <LoginButton
                             handleShowLogin={handleShowLogin}
-                            className='font-dm-sans font-semibold tracking-[2%] leading-[26px] text-[18px] bg-white text-black hover:text-white hover:bg-white/90 duration-200 rounded-full py-4 px-6'
+                            className='font-dm-sans font-semibold tracking-[2%] leading-[26px] md:text-[18px] text-[16px] bg-white text-black hover:text-white hover:bg-white/90 duration-200 rounded-full py-3 md:py-4 px-3 md:px-6'
                             icon
                             text='Get started'
                         />
@@ -140,7 +141,7 @@ export default function Content() {
             {showLogin && (
                 <div
                     ref={loginFormRef}
-                    className='absolute top-20 left-10 max-w-xl liquid-glass-enhanced rounded-2xl'>
+                    className='absolute max-sm:top-5 max-sm:left-1 top-10 left-5 lg:top-20 lg:left-10 z-30 max-w-xl liquid-glass-enhanced rounded-2xl'>
                     <LoginForm
                         className='max-w-xl liquid-glass-enhanced rounded-2xl'
                         setShowLogin={handleHideLogin}
@@ -148,8 +149,12 @@ export default function Content() {
                 </div>
             )}
 
-            {/*   <VerticalSlider /> */}
-            <VerticalMarquee />
+            <div className='md:hidden block'>
+                <HorizontalMarquee />
+            </div>
+            <div className='hidden md:block'>
+                <VerticalMarquee />
+            </div>
         </div>
     );
 }

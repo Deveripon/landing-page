@@ -5,7 +5,7 @@ const ImageCard = ({ image, className }) => {
     return (
         <div
             className={cn(
-                'image-card min-h-[390px] w-[354px] rounded-xl overflow-hidden ',
+                'image-card md:h-[390px] h-[280px] md:w-[354px] w-[250px] rounded-xl overflow-hidden ',
                 className
             )}>
             <Image
